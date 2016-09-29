@@ -45,7 +45,7 @@ append_result model s = let l = get_last_term model in if l == s then { model | 
 
 update: Msg -> Model -> (Model, Cmd Msg)
 update msg model = case msg of
-  NewInput s -> ({model | input_term = s}, Cmd.none)
+  NewInput s -> ({model | input_term = s, output_terms = [], message = ""}, Cmd.none)
   Step -> (model, simple_lambda (get_last_term model))
   GotResult s -> (append_result model s, Cmd.none)
   Clear -> ({model | output_terms = [], message = ""}, Cmd.none)

@@ -1,23 +1,32 @@
-Boxes and Bubbles
+Lambda-calculus interpreter
 =================
 
-[![Join the chat at https://gitter.im/jastice/boxes-and-bubbles](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jastice/boxes-and-bubbles?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+This is a simple UI for a lambda-calculus interpreter.
 
-A simple-as-possible 2D physics rigid-body physics engine for Elm.
-Supports only bubbles (circles) and boxes (axis-aligned rectangles).
+## Syntax
 
-Here's [an example](http://jastice.github.io/boxes-and-bubbles/) ([source](https://github.com/jastice/boxes-and-bubbles/blob/master/src/Example.elm)) of the engine in action.
+The interpreter accepts several variations of syntax such as 
 
-It does this:
+```
+\x->y
+\x.y
+λx→y
+```
 
-* resolve collisions between bodies of different mass and bounciness.
-* gravity (ignores mass) / global time-varying forces (mass-dependent)
+## Build from source
 
-It doesn't do:
+This requires Elm 0.17 installed.
 
-* arbitrary polygons
-* friction / drag
-* rotation
-* time-integrated movement
-* graphics
-* colliding unstoppable forces with immovable objects (infinite masses will be glitchy)
+To compile:
+
+```
+elm-make src/LambdaUI.elm --output=elm.js
+```
+
+## Run
+
+Build from source and then open `elm-lambda.html` in the browser.
+
+## Status
+
+Version 0.0.1: Basic functionality, detection of repetitive reduction steps.
