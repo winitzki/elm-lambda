@@ -12,7 +12,8 @@ import Html.App exposing (program)
 import Html exposing (Html, Attribute, button, text, div, input)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
-import List exposing (map)
+import List exposing (map, isEmpty, head, reverse, append)
+import Maybe exposing (withDefault)
 import Element exposing (..)
 import Color exposing (..)
 import Text exposing (fromString)
@@ -21,11 +22,12 @@ import Time exposing (Time)
 
 type alias Model = {
   input_term: String,
-  output_term: String
+  output_terms: List String,
+  message: String
 }
 
 init_state : Model
-init_state = { input_term = "", output_term = "" }
+init_state = { input_term = "", output_terms = [], message = "" } -- output_terms is in reversed order
 
 port simple_lambda : String -> Cmd msg
 port simple_lambda_result : (String -> msg) -> Sub msg
@@ -35,21 +37,30 @@ type Msg = Step | Clear | GotResult String | NewInput String
 subs : Sub Msg
 subs = simple_lambda_result GotResult
 
+get_last_term : Model -> String
+get_last_term model = head model.output_terms |> withDefault model.input_term
+
+append_result : Model -> String -> Model
+append_result model s = let l = get_last_term model in if l == s then { model | message = "No more reductions" } else {model | output_terms = s :: model.output_terms}
+
 update: Msg -> Model -> (Model, Cmd Msg)
 update msg model = case msg of
   NewInput s -> ({model | input_term = s}, Cmd.none)
-  Step -> (model, simple_lambda model.input_term)
-  GotResult s -> ({model | output_term = s}, Cmd.none)
-  clear -> ({model | output_term = ""}, Cmd.none)
+  Step -> (model, simple_lambda (get_last_term model))
+  GotResult s -> (append_result model s, Cmd.none)
+  Clear -> ({model | output_terms = [], message = ""}, Cmd.none)
+
+show_term term = div [ myStyle ] [ text term ]
 
 scene : Model -> Html Msg
 scene model = 
   div []
-    [ input [ placeholder "(\\x -> \\y -> x) z", onInput NewInput, myStyle ] []
+    (append [ input [ placeholder "Enter a lambda-term such as (\\x -> \\y -> x) z", onInput NewInput, myStyle ] []
     , button [ onClick Step ] [ text "Step" ]
     , button [ onClick Clear ] [ text "Clear" ]
-    , div [ myStyle ] [ text model.output_term ]
-    ]
+    , text model.message
+    ] <| map show_term (reverse model.output_terms)
+    )
 
 myStyle =
   style
