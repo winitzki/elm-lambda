@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta charset="UTF-8"/>
+</head>
+
+<body>
+
+<script src="elm.js"></script>
+
+<script src="src/simplelambda.js" charset="UTF-8"></script>
+
+<script>
+var app = Elm.LambdaUI.fullscreen();
+
+app.ports.simple_lambda.subscribe(function(input_term){
+var result = "waiting";
+try {
+  var parsed_term = parse(input_term);
+  new_term = reduce(parsed_term);
+  if (new_term)
+    result = new_term.toString(); 
+  else
+    result = parsed_term.toString();
+} catch(e) {
+  result = "Error: " + e ;
+}
+  console.log("returning result: " + result);
+  app.ports.simple_lambda_result.send(result);
+});
+
+</script>
+
+</body>
+
+</html>
