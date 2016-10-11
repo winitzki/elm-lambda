@@ -23,9 +23,16 @@ To compile:
 elm-make src/LambdaUI.elm --output=elm.js
 ```
 
+The JavaScript code is in `elm.js`. To produce JavaScript code optimized by the Google Closure Compiler:
+
+```
+elm-make src/LambdaUI.elm --output=elm-u.js
+java -jar /path/to/google-closure-compiler.jar --js elm-u.js --js_output_file elm.js
+```
+
 ## Run
 
-Build from source and then open `elm-lambda.html` in the browser.
+Build from source, so that you have `elm.js`, and then open the file `elm-lambda.html` in the browser.
 
 ## Status
 
